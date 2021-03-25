@@ -1,0 +1,39 @@
+type User @collection(name: "users") {
+  username: String!
+  email: String!
+  shelves: [Shelf] @relation
+}
+
+type UserBook @collection(name: "user_books") {
+  shelves: [Shelf] @relation
+  source: Book @relation
+}
+
+type Shelf @collection(name: "shelves") {
+  title: String!
+  key: String!
+  owner: User! @relation
+  books: [UserBook] @relation
+}
+
+type Book @collection(name: "books") {
+  googleBookId: ID!
+  volumeInfo: BookSourceVolumeInfo!
+}
+
+type BookSourceVolumeInfo @embedded {
+  title: String!
+  authors: [String!]!
+  publisher: String!
+  description: String!
+  imageLinks: BookSourceImageLinks
+}
+
+type BookSourceImageLinks @embedded {
+  smallThumbnail: String
+  thumbnail: String
+}
+
+type Query {
+  me: User! @resolver(name: "fetch_me")
+}
